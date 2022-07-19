@@ -5,6 +5,7 @@ macro_rules! instruction {
         $(#[$attr])*
         #[inline]
         pub unsafe fn $fnname() {
+            use core::arch::asm;
             match () {
                 #[cfg(all(riscv, feature = "inline-asm"))]
                 () => asm!($asm),
@@ -56,6 +57,7 @@ instruction!(
 #[inline]
 #[allow(unused_variables)]
 pub unsafe fn sfence_vma(asid: usize, addr: usize) {
+    use core::arch::asm;
     match () {
         #[cfg(all(riscv, feature = "inline-asm"))]
         () => asm!("sfence.vma {0}, {1}", in(reg) asid, in(reg) addr),
@@ -84,6 +86,7 @@ mod hypervisor_extension {
             #[inline]
             #[allow(unused_variables)]
             pub unsafe fn $fnname(rs1: usize, rs2: usize) {
+                use core::arch::asm;
                 match () {
                     #[cfg(all(riscv, feature = "inline-asm"))]
                     // Since LLVM does not recognize the two registers, we assume they are placed in a0 and a1, correspondingly.
@@ -108,6 +111,7 @@ mod hypervisor_extension {
             #[inline]
             #[allow(unused_variables)]
             pub unsafe fn $fnname(rs1: usize)->usize {
+                use core::arch::asm;
                 match () {
                     #[cfg(all(riscv, feature = "inline-asm"))]
                     () => {
